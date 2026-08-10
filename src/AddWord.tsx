@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import './AddWord.css'
 
 type Props = {
   onAdd: (word: string) => void
@@ -42,18 +43,19 @@ export function AddWord({ onAdd }: Props) {
   }
 
   return (
-    <form onSubmit={submit} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+    <form onSubmit={submit} className="add-word-form">
       <input
         value={word}
         onChange={(e) => setWord(e.target.value)}
-        placeholder="Add a new word"
+        placeholder="Add a new word..."
         aria-label="New word"
-        style={{ flex: 1, padding: '0.5rem' }}
+        className="add-word-input"
+        autoFocus
       />
-      <button type="submit" disabled={loading || word.trim() === ''}>
-        {loading ? 'Adding…' : 'Add'}
+      <button type="submit" disabled={loading || word.trim() === ''} className="add-word-button">
+        {loading ? '⏳ Adding…' : '➕ Add'}
       </button>
-      {error && <div style={{ color: 'red', marginLeft: '0.5rem' }}>{error}</div>}
+      {error && <div className="add-word-error">{error}</div>}
     </form>
   )
 }
