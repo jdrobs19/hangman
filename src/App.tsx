@@ -3,7 +3,6 @@ import { HangmanDrawing } from './HangmanDrawing'
 import { HangmanWord } from './HangmanWord'
 import { Keyboard } from './Keyboard'
 import AddWord from './AddWord'
-import './App.css'
 
 function App() {
 
@@ -16,10 +15,6 @@ function App() {
 
   const isLoss = incorrectLetters.length >= 6
   const isWin = wordToGuess.split("").every(letter => guessedLetters.includes(letter))
-
-  // Calculate progress
-  const correctLetters = guessedLetters.filter(letter => wordToGuess.includes(letter))
-  const progressPercent = wordToGuess ? (correctLetters.length / wordToGuess.length) * 100 : 0
 
   const addGuessedLetter = useCallback((letter: string) => {
     if(guessedLetters.includes(letter) || isLoss || isWin) return
@@ -64,55 +59,34 @@ function App() {
     setWords(prev => [...prev, word])
   }
 
-  const getProgressBarClass = () => {
-    if (isWin) return ''
-    if (progressPercent < 33) return 'danger'
-    if (progressPercent < 66) return 'warning'
-    return ''
-  }
-
   return (
-    <div className="app-container">
-      <div className={`status-message ${isWin ? 'win' : isLoss ? 'loss' : 'neutral'}`}>
-        {isWin && "🎉 You win! Refresh for a new word."}
-        {isLoss && "😔 Try again! Refresh for a new word."}
-        {!isWin && !isLoss && "🎮 Hangman Game"}
+    <div
+      style={{
+        maxWidth: "800px",
+        display: "flex",
+        flexDirection: "column",
+        gap: "2rem",
+        margin: "0 auto",
+        alignItems: "center"
+      }}>
+      <div style={{ textAlign: "center", fontSize: "2rem" }}>
+      {isWin && "You win! Refresh for a new word."}
+      {isLoss && "Try again! Refresh for a new word."}
       </div>
-
-      {wordToGuess && (
-        <div className="progress-section">
-          <div className="progress-label">
-            <span>Letters Guessed</span>
-            <span>{correctLetters.length} / {wordToGuess.length}</span>
-          </div>
-          <div className="progress-bar-container">
-            <div 
-              className={`progress-bar ${getProgressBarClass()}`}
-              style={{ width: `${progressPercent}%` }}
-            />
-          </div>
-        </div>
-      )}
-
-      <div className="add-word-section">
+      <div style={{ alignSelf: 'stretch' }}>
         <AddWord onAdd={handleAddWord} />
       </div>
-      
-      <div className="game-content">
-        <div className="hangman-container">
-          <HangmanDrawing numberOfGuesses={incorrectLetters.length} />
-        </div>
-        <HangmanWord reveal={isLoss} guessedLetters={guessedLetters} wordToGuess={wordToGuess}/>
-        <div className="keyboard-section">
-          <Keyboard 
-            disabled = {isWin || isLoss}
-            activeLetters={guessedLetters.filter(letter => 
-              wordToGuess.includes(letter)
-            )}
-            inactiveLetters={incorrectLetters}
-            addGuessedLetter = {addGuessedLetter}
-            />
-        </div>
+      <HangmanDrawing numberOfGuesses={incorrectLetters.length} />
+      <HangmanWord reveal={isLoss} guessedLetters={guessedLetters} wordToGuess={wordToGuess}/>
+      <div style={{alignSelf: "stretch"}}>
+      <Keyboard 
+        disabled = {isWin || isLoss}
+        activeLetters={guessedLetters.filter(letter => 
+          wordToGuess.includes(letter)
+        )}
+        inactiveLetters={incorrectLetters}
+        addGuessedLetter = {addGuessedLetter}
+        />
       </div>
     </div>
   )
